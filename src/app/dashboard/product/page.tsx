@@ -1,26 +1,20 @@
-import styles from './styles.module.scss'
+import {Form} from './components/form'
+import { api } from '@/services/app'
+import { getCookiServer } from '@/lib/cookieServer'
 
-export default function Product() {
+export default async function Product() {
+
+  const token = await getCookiServer()
+
+  const response = await api.get('/category', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+      }
+  })
+
+ // console.log(response.data)
+
   return (
-<main className={styles.container}>
-
-<div>Categoria</div>
-
-<form action="">
-
-
-<input type="text"
-name='name'
-placeholder='Nome da Categoria '
-className='input'
-required
-/>
-
-<button>
-cadastrar
-</button>
-
-</form>
-</main>
+<Form categories={response.data} />
   )
 }

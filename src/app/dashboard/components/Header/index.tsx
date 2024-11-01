@@ -8,7 +8,6 @@ import {LogOut} from 'lucide-react'
 import { deleteCookie  } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 
-
 export default function Header() {
     // useRouter so pode ser usado em 'use client'
     const router = useRouter()

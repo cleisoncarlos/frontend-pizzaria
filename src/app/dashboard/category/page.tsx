@@ -1,17 +1,41 @@
 import styles from './styles.module.scss'
 import { Button } from '../components/button'
+import { api } from '@/services/app'
+import {getCookiServer} from '@/lib/cookieServer'
+// redirect so funciona no server component
+import {redirect} from 'next/navigation'
+
 
 export default function Category() {
-
-
-
-    async function handleRegisterCategory(){
+    async function handleRegisterCategory(formData: FormData){
         "use server"
-        console.log('teste')
+      //  console.log('teste')
+      const name = formData.get('name')
+
+      if(!name) {
+        return
+      } 
+
+      const data = {
+        name: name
+      }
+
+
+const token = await getCookiServer()
+
+      await api.post('/category', data, {
+        headers: {
+          Authorization: `Brearer ${token}`
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        return
+      })
+
+      redirect('/dashboard')
 
     }
-
-
 
   return (
     <main className={styles.container}>
@@ -29,8 +53,6 @@ export default function Category() {
         className={styles.input}
       />
       <Button name='Cadastrar categoria' />
-
-      {/* <Button name="Cadastrar" /> */}
     </form>
   </main>
   )
