@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./components/Header";
+import { Toaster, toast } from 'sonner'
 
 export default function DashboardLayout({children}: 
     {children: React.ReactNode}){
@@ -7,6 +8,9 @@ export default function DashboardLayout({children}:
         return(
             <>
             <Header/>
+            <Toaster
+            position="top-right"
+            />
             {children}
             </>
         )

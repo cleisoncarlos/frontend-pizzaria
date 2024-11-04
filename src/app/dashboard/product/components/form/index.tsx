@@ -5,6 +5,13 @@ import styles from './styles.module.scss'
 import { UploadCloud } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '@/app/dashboard/components/button'
+import { api } from '@/services/app'
+import {getCookieClient} from '@/lib/cookieClient'
+
+import { useRouter } from 'next/navigation'
+
+// toast so funciona no use client
+import { toast } from 'sonner'
 
 
 // tipagem
@@ -21,10 +28,10 @@ interface Props{
 
 export function Form({categories}: Props){
 
+  const router = useRouter()
+
   const [image, setImage] = useState<File>()
   const [previewImage, setPreviewImage] = useState("")
-
-
 
   //================================================================
 
@@ -35,22 +42,41 @@ export function Form({categories}: Props){
     const price = formData.get("price")
     const description = formData.get("description")
   
-    if(!name || !categoryIndex || !price || !description ){
+    if(!name || !categoryIndex || !price || !description || !image ){
       return;
     }
   
-    console.log(categories[0])
+   // console.log(categories[Number(categoryIndex)])
+
+   const data = new FormData();
+
+   data.append('name', name)
+   data.append('price', price)
+   data.append('description', description)
+   data.append('category_id', categories[Number(categoryIndex)].id)
+   data.append('file', image)
   
+
+   const token = getCookieClient()
+
+   await api.post('/product', data, {
+    headers: {
+      Authorization: `Bearer ${token}`
+      }
+
+   })
+
+   .catch((err)=> {
+    toast.error(`Falha ao cadastrar ${err}`)
+  //  console.log(err)
+    return;
+   })
+
+toast.success('Produto registrado com sucesso!')
+router.push('/dashboard') 
   
   }
   
-
-
-
-
-
-
-
 
   function handleFile(e: ChangeEvent<HTMLInputElement>){
     if(e.target.files && e.target.files[0]){
